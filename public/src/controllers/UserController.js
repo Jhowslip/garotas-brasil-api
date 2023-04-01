@@ -21,7 +21,7 @@ const Feedback_1 = __importDefault(require("../entities/Feedback"));
 class UserController {
     store(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { nome, email, password, provider, confirmation_video, contato, nivel_plan, } = req.body;
+            const { name, email, password, provider, confirmation_video, contato, plan_level, } = req.body;
             const userExists = yield data_source_1.AppDataSource.getRepository(User_1.default).findOne({
                 where: { email },
             });
@@ -35,13 +35,13 @@ class UserController {
                 });
             }
             const user = new User_1.default();
-            user.name = nome;
+            user.name = name;
             user.email = email;
             user.password = yield hashPassword(password);
             user.provider = provider;
-            user.confirmation_video;
+            user.confirmation_video = confirmation_video;
             user.contact = contato;
-            user.plan_level = nivel_plan;
+            user.plan_level = plan_level;
             const userSaved = yield data_source_1.AppDataSource.getRepository(User_1.default).save(user);
             const profile = new Profile_1.default();
             profile.name = 'Digite o Nome do seu Perfil';
@@ -58,6 +58,7 @@ class UserController {
             const pagamento = new Payment_1.default();
             pagamento.receipt = '';
             pagamento.user = userSaved;
+            pagamento.plan_level = plan_level;
             const pagamentoSaved = yield data_source_1.AppDataSource.getRepository(Payment_1.default).save(pagamento);
             const feedback = new Feedback_1.default();
             feedback.nome = '';
@@ -103,13 +104,14 @@ class UserController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const users = yield data_source_1.AppDataSource.getRepository(User_1.default).find({
-                    select: ['id', 'name', 'email', 'provider'],
-                    relations: ['profile', 'plan', 'pagamento'],
+                    select: ['id', 'name', 'email', 'provider', 'plan_level'],
+                    relations: ['profiles', 'payments'],
                 });
                 // Encerra a conexão após finalizar a operação
                 return res.json(users);
             }
             catch (error) {
+                console.error(error); // Imprime a mensagem de erro no console
                 // Encerra a conexão se ocorrer algum erro
                 return res.status(500).json({ error: 'Internal server error' });
             }

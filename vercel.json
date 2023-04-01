@@ -3,14 +3,14 @@
   "public": true,
   "builds": [
     {
-      "src": "src/app.ts",
+      "src": "public/src/app.js",
       "use": "@vercel/node"
     }
   ],
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "src/app.ts"
+      "dest": "public/src/app.js"
     }
   ]
 }

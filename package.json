@@ -1,10 +1,10 @@
 {
   "name": "jwt_auth_node_typeorm",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "src/app.js",
   "license": "MIT",
   "scripts": {
-    "start": "ts-node-dev --respawn --transpile-only --exit-child src/app.ts",
+    "start": "ts-node-dev --respawn --transpile-only --exit-child ./public/src/app.js",
     "typeorm": "typeorm-ts-node-commonjs",
     "build": "tsc -p .",
     "migrate": "rm -rf public && yarn build && yarn typeorm migration:generate ./src/migrations/added-user-entity -d ./src/utils/data-source.ts",
