@@ -1,0 +1,20 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const UserController_1 = __importDefault(require("./controllers/UserController"));
+const SessionController_1 = __importDefault(require("./controllers/SessionController"));
+const ProfileController_1 = __importDefault(require("./controllers/ProfileController"));
+const FeedBackController_1 = __importDefault(require("./controllers/FeedBackController"));
+const routes = (0, express_1.Router)();
+routes.post('/users', UserController_1.default.store);
+routes.post('/feedback', FeedBackController_1.default.store);
+routes.get('/profiles', ProfileController_1.default.getAll);
+routes.get('/profiles/:id', ProfileController_1.default.getById);
+routes.post('/sessions', SessionController_1.default.store);
+//routes.use(authMiddleware);
+routes.post('/users', UserController_1.default.update);
+routes.get('/users', UserController_1.default.getAll);
+exports.default = routes;
