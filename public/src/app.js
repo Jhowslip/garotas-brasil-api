@@ -14,7 +14,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 require('dotenv').config();
 const express_1 = __importDefault(require("express"));
-const config_1 = __importDefault(require("config"));
 const validateEnv_1 = __importDefault(require("./utils/validateEnv"));
 const cors_1 = __importDefault(require("cors"));
 const helmet_1 = __importDefault(require("helmet"));
@@ -39,8 +38,7 @@ data_source_1.AppDataSource.initialize()
     // HEALTH CHECKER
     // UNHANDLED ROUTE
     // GLOBAL ERROR HANDLER
-    const port = config_1.default.get('port');
-    app.listen(port);
-    console.log(`Server started on port: ${port}`);
+    app.listen(3333);
+    console.log(`Server started on port: ${3333}`);
 }))
     .catch((error) => console.log(error));

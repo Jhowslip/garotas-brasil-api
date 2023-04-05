@@ -37,9 +37,8 @@ AppDataSource.initialize()
 
     // GLOBAL ERROR HANDLER
 
-    const port = config.get<number>('port');
-    app.listen(port);
+    app.listen(3333);
 
-    console.log(`Server started on port: ${port}`);
+    console.log(`Server started on port: ${3333}`);
   })
   .catch((error) => console.log(error));

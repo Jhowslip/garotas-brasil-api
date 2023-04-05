@@ -122,7 +122,7 @@ class UserController {
         select: ['id', 'name', 'email', 'provider', 'plan_level'],
         relations: ['profiles', 'payments'],
       });
-  
+
       // Encerra a conexão após finalizar a operação
       return res.json(users);
     } catch (error) {
@@ -131,7 +131,6 @@ class UserController {
       return res.status(500).json({ error: 'Internal server error' });
     }
   }
-  
 }
 
 export default new UserController();

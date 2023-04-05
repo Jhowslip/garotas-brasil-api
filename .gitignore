@@ -2,7 +2,9 @@
 .vscode/
 node_modules/
 build/
+public
 tmp/
 temp/
 .env
 .vercel
+./public

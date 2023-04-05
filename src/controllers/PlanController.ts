@@ -1,35 +1,30 @@
-import jwt from 'jsonwebtoken';
-import authConfig from '../../config/auth';
 import { AppDataSource } from '../utils/data-source';
-import User from '../entities/User';
+import Plan from '../entities/Plan';
 
 class SessionController {
   async store(req: any, res: any) {
-    const { email, password } = req.body;
-    const user = await AppDataSource.getRepository(User).findOne({
-      where: { email },
-    });
+    const { name, description, price, level } = req.body;
 
-    if (!user) {
-      return res.status(401).json({ error: 'User not found' });
+    const plan = new Plan();
+    plan.name = name;
+    plan.description = description;
+    plan.price = price;
+    plan.level = level;
+
+    const planSaved = await AppDataSource.getRepository(Plan).save(plan);
+
+    return res.json(planSaved);
+  }
+
+  async getAll(req: any, res: any) {
+    try {
+      const plans = await AppDataSource.getRepository(Plan).find();
+
+      return res.json(plans);
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ error: 'Internal server error' });
     }
-
-    if (!(await user.checkPassword(password))) {
-      return res.status(401).json({ error: 'password invalid' });
-    }
-
-    const { id, name } = user;
-
-    return res.json({
-      user: {
-        id,
-        name,
-        email,
-      },
-      token: jwt.sign({ id }, authConfig.secret, {
-        expiresIn: authConfig.expiresIn,
-      }),
-    });
   }
 }
 

@@ -3,14 +3,22 @@
   "public": true,
   "builds": [
     {
-      "src": "public/src/app.js",
+      "src": "src/app.ts",
       "use": "@vercel/node"
     }
   ],
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "public/src/app.js"
+      "dest": "src/app.ts"
     }
-  ]
+  ],
+  "env": {
+    "POSTGRES_HOST": "db.yioyjdglktnmrssxdyuy.supabase.co",
+    "POSTGRES_PORT": "5432",
+    "POSTGRES_USER": "postgres",
+    "POSTGRES_PASSWORD": "dGHg4eVwTaStJHT5",
+    "POSTGRES_DB": "postgres",
+    "NODE_ENV": "development"
+  }
 }
