@@ -17,6 +17,7 @@ routes.post('/plan', PlanController_1.default.store);
 routes.get('/plan', PlanController_1.default.getAll);
 routes.get('/feedback', FeedBackController_1.default.getAll);
 routes.get('/profiles', ProfileController_1.default.getAll);
+routes.put('/profiles', ProfileController_1.default.update);
 routes.get('/profiles/:id', ProfileController_1.default.getById);
 //routes.use(authMiddleware);
 routes.post('/users', UserController_1.default.update);

@@ -56,11 +56,11 @@ __decorate([
     __metadata("design:type", Boolean)
 ], User.prototype, "provider", void 0);
 __decorate([
-    (0, typeorm_1.OneToMany)(() => Payment_1.default, payment => payment.user),
+    (0, typeorm_1.OneToMany)(() => Payment_1.default, (payment) => payment.user),
     __metadata("design:type", Array)
 ], User.prototype, "payments", void 0);
 __decorate([
-    (0, typeorm_1.OneToMany)(() => Profile_1.default, profile => profile.user),
+    (0, typeorm_1.OneToMany)(() => Profile_1.default, (profile) => profile.user),
     __metadata("design:type", Array)
 ], User.prototype, "profiles", void 0);
 __decorate([
@@ -71,6 +71,22 @@ __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)
 ], User.prototype, "confirmation_video", void 0);
+__decorate([
+    (0, typeorm_1.Column)('text', { nullable: true }),
+    __metadata("design:type", String)
+], User.prototype, "rg", void 0);
+__decorate([
+    (0, typeorm_1.Column)('text', { nullable: true }),
+    __metadata("design:type", String)
+], User.prototype, "cidade", void 0);
+__decorate([
+    (0, typeorm_1.Column)('text', { nullable: true }),
+    __metadata("design:type", String)
+], User.prototype, "estado", void 0);
+__decorate([
+    (0, typeorm_1.Column)('text', { nullable: true }),
+    __metadata("design:type", Date)
+], User.prototype, "data_nascimento", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)

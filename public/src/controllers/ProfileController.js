@@ -18,9 +18,7 @@ class ProfileController {
     getAll(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const profiles = yield data_source_1.AppDataSource.createQueryBuilder(Profile_1.default, 'profile')
-                    .leftJoinAndSelect('profile.user', 'user')
-                    .getMany();
+                const profiles = yield data_source_1.AppDataSource.getRepository(Profile_1.default).find();
                 return res.json(profiles);
             }
             catch (error) {
@@ -30,11 +28,28 @@ class ProfileController {
     }
     getById(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
+            const id = parseInt(req.params.id);
             try {
-                const profile = yield data_source_1.AppDataSource.createQueryBuilder(Profile_1.default, 'profile')
-                    .leftJoinAndSelect('profile.user', 'user')
-                    .where('profile.id = :id', { id: req.params.id })
-                    .getOne();
+                const profile = yield data_source_1.AppDataSource.getRepository(Profile_1.default).findOne({
+                    where: { id: id },
+                });
+                if (!profile) {
+                    return res.status(404).json({ error: 'Profile not found' });
+                }
+                return res.json(profile);
+            }
+            catch (error) {
+                return res.status(500).json({ error: 'Internal server error' });
+            }
+        });
+    }
+    update(req, res) {
+        var _a;
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const profile = yield data_source_1.AppDataSource.getRepository(Profile_1.default).findOne({
+                    where: { id: (_a = req.body) === null || _a === void 0 ? void 0 : _a.id },
+                });
                 if (!profile) {
                     return res.status(404).json({ error: 'Profile not found' });
                 }

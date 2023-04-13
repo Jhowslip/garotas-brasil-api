@@ -29,10 +29,10 @@ export default class User {
   @Column()
   provider!: boolean;
 
-  @OneToMany(() => Payment, payment => payment.user)
+  @OneToMany(() => Payment, (payment) => payment.user)
   payments!: Payment[];
 
-  @OneToMany(() => Profile, profile => profile.user)
+  @OneToMany(() => Profile, (profile) => profile.user)
   profiles!: Profile[];
 
   @Column('text', { array: true, nullable: true })
@@ -40,6 +40,18 @@ export default class User {
 
   @Column()
   confirmation_video!: string;
+
+  @Column('text', { nullable: true })
+  rg!: string;
+
+  @Column('text', { nullable: true })
+  cidade!: string;
+
+  @Column('text', { nullable: true })
+  estado!: string;
+
+  @Column('text', { nullable: true })
+  data_nascimento!: Date;
 
   @Column()
   contact!: string;

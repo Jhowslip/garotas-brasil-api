@@ -12,37 +12,66 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const aws_sdk_1 = __importDefault(require("aws-sdk"));
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const data_source_1 = require("../utils/data-source");
 const User_1 = __importDefault(require("../entities/User"));
 const Profile_1 = __importDefault(require("../entities/Profile"));
 const Payment_1 = __importDefault(require("../entities/Payment"));
 const Feedback_1 = __importDefault(require("../entities/Feedback"));
+const s3 = new aws_sdk_1.default.S3({
+    region: process.env.AWS_REGION,
+    credentials: {
+        accessKeyId: process.env.AWS_ACCESS_KEY_ID || 'AKIAWYB32RTBO4MER3VK',
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY ||
+            'LXuDebvgsv0FlXSNewnLqNYJvPBOYA6hKcsL',
+    },
+});
+function uploadFile(req, res, fileBuffer) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const contentType = 'image/jpeg';
+        const filename = `image-${Date.now().toString()}`;
+        const params = {
+            Bucket: process.env.AWS_S3_BUCKET_NAME || 'garotasbrasil',
+            Key: filename,
+            Body: fileBuffer,
+            ContentType: contentType,
+        };
+        try {
+            yield s3.upload(params).promise();
+            return `https://${params.Bucket}.s3.amazonaws.com/${params.Key}`;
+        }
+        catch (error) {
+            console.log(error);
+            throw new Error('Error uploading file');
+        }
+    });
+}
 class UserController {
     store(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { name, email, password, provider, confirmation_video, contato, plan_level, } = req.body;
+            const { name, email, password, provider, contato, plan_level, rg, data_nascimento, cidade, estado, confirmation_video, } = req.body;
             const userExists = yield data_source_1.AppDataSource.getRepository(User_1.default).findOne({
                 where: { email },
             });
             if (userExists) {
                 return res.status(400).json({ error: 'User already exists' });
             }
-            function hashPassword(password) {
-                return __awaiter(this, void 0, void 0, function* () {
-                    let cripty = yield bcryptjs_1.default.hash(password, 8);
-                    return cripty;
-                });
-            }
+            const hashedPassword = yield bcryptjs_1.default.hash(password, 8);
+            const videoBuffer = Buffer.from(confirmation_video, 'base64');
+            const videoUrl = yield uploadFile(req, res, videoBuffer);
             const user = new User_1.default();
             user.name = name;
             user.email = email;
-            user.password = yield hashPassword(password);
+            user.password = hashedPassword;
             user.provider = provider;
-            user.confirmation_video = confirmation_video;
             user.contact = contato;
             user.plan_level = plan_level;
-            const userSaved = yield data_source_1.AppDataSource.getRepository(User_1.default).save(user);
+            user.rg = rg;
+            user.data_nascimento = data_nascimento;
+            user.cidade = cidade;
+            user.estado = estado;
+            user.confirmation_video = videoUrl;
             const profile = new Profile_1.default();
             profile.name = 'Digite o Nome do seu Perfil';
             profile.description = 'Sobre mim';
@@ -51,20 +80,23 @@ class UserController {
             profile.videos = [];
             profile.tags = [];
             profile.photos = [];
-            profile.city = '';
-            profile.state = '';
-            profile.user = userSaved;
-            const profileSaved = data_source_1.AppDataSource.getRepository(Profile_1.default).save(profile);
+            profile.city = cidade;
+            profile.state = estado;
+            profile.user = user;
             const pagamento = new Payment_1.default();
             pagamento.receipt = '';
-            pagamento.user = userSaved;
+            pagamento.user = user;
             pagamento.plan_level = plan_level;
-            const pagamentoSaved = yield data_source_1.AppDataSource.getRepository(Payment_1.default).save(pagamento);
             const feedback = new Feedback_1.default();
             feedback.nome = '';
             feedback.mensagem = '';
             feedback.profile = profile;
-            const feedbackSaved = yield data_source_1.AppDataSource.getRepository(Feedback_1.default).save(feedback);
+            const [userSaved, profileSaved, pagamentoSaved, feedbackSaved] = yield Promise.all([
+                data_source_1.AppDataSource.getRepository(User_1.default).save(user),
+                data_source_1.AppDataSource.getRepository(Profile_1.default).save(profile),
+                data_source_1.AppDataSource.getRepository(Payment_1.default).save(pagamento),
+                data_source_1.AppDataSource.getRepository(Feedback_1.default).save(feedback),
+            ]);
             return res.json({
                 id: userSaved.id,
                 nome: userSaved.name,
