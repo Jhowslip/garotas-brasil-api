@@ -38,7 +38,7 @@ data_source_1.AppDataSource.initialize()
     // HEALTH CHECKER
     // UNHANDLED ROUTE
     // GLOBAL ERROR HANDLER
-    app.listen(3333);
+    app.listen(process.env.PORT);
     console.log(`Server started on port: ${3333}`);
 }))
     .catch((error) => console.log(error));

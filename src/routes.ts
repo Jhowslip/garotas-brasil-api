@@ -9,12 +9,15 @@ import PlanController from './controllers/PlanController';
 const routes = Router();
 
 routes.post('/users', UserController.store);
+routes.post('/upload', UserController.upload);
+routes.post('/uploadVideos', UserController.uploadVideos);
 routes.post('/sessions', SessionController.store);
 routes.post('/feedback', FeedBackController.store);
 routes.post('/plan', PlanController.store);
 routes.get('/plan', PlanController.getAll);
 routes.get('/feedback', FeedBackController.getAll);
 routes.get('/profiles', ProfileController.getAll);
+routes.put('/profiles', ProfileController.update);
 routes.get('/profiles/:id', ProfileController.getById);
 //routes.use(authMiddleware);
 routes.post('/users', UserController.update);
