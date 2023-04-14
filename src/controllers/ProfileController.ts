@@ -14,6 +14,7 @@ class ProfileController {
       const profiles = await AppDataSource.getRepository(Profile).find({
         where: {
           user: {
+            provider: true,
             plan_level: planLevel?.toString(),
             cidade: city?.toString(),
             estado: state?.toString(),
