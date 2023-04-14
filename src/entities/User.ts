@@ -65,12 +65,12 @@ export default class User {
   @UpdateDateColumn()
   updated_at!: Date;
 
-  @BeforeInsert()
-  async hashPassword() {
-    this.password = await bcrypt.hash(this.password, 8);
-  }
+  // @BeforeInsert()
+  // async hashPassword() {
+  //   this.password = await bcrypt.hash(this.password, 8);
+  // }
 
-  checkPassword(password: string): Promise<boolean> {
-    return bcrypt.compare(password, this.password);
+  checkPassword(password: string) {
+    return password === this.password;
   }
 }

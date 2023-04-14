@@ -46,6 +46,7 @@ class ProfileController {
     update(req, res) {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
+            const { city, description, id, name, photos, quotes, services, state, tags, videos, } = req.body;
             try {
                 const profile = yield data_source_1.AppDataSource.getRepository(Profile_1.default).findOne({
                     where: { id: (_a = req.body) === null || _a === void 0 ? void 0 : _a.id },
@@ -53,7 +54,20 @@ class ProfileController {
                 if (!profile) {
                     return res.status(404).json({ error: 'Profile not found' });
                 }
-                return res.json(profile);
+                const profileUpdated = yield data_source_1.AppDataSource.getRepository(Profile_1.default).merge(profile, {
+                    city,
+                    description,
+                    id,
+                    name,
+                    photos,
+                    quotes,
+                    services,
+                    state,
+                    tags,
+                    videos,
+                });
+                const profileSaved = yield data_source_1.AppDataSource.getRepository(Profile_1.default).save(profileUpdated);
+                return res.json(profileSaved);
             }
             catch (error) {
                 return res.status(500).json({ error: 'Internal server error' });

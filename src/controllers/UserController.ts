@@ -41,12 +41,12 @@ class UserController {
       return res.status(400).json({ error: 'User already exists' });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 8);
+    //const hashedPassword = await bcrypt.hash(password, 8);
 
     const user = new User();
     user.name = name;
     user.email = email;
-    user.password = hashedPassword;
+    user.password = password;
     user.provider = provider;
     user.contact = contato;
     user.plan_level = plan_level;
@@ -167,7 +167,6 @@ class UserController {
   }
   async uploadVideos(req: Request, res: Response) {
     const fileBuffer = Buffer.from(req?.body?.videos, 'base64');
-
     const contentType = 'video/mp4';
     const filename = `video-${Date.now().toString()}`;
 

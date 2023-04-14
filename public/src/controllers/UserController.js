@@ -13,7 +13,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const aws_sdk_1 = __importDefault(require("aws-sdk"));
-const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const data_source_1 = require("../utils/data-source");
 const User_1 = __importDefault(require("../entities/User"));
 const Profile_1 = __importDefault(require("../entities/Profile"));
@@ -27,26 +26,6 @@ const s3 = new aws_sdk_1.default.S3({
             'LXuDebvgsv0FlXSNewnLqNYJvPBOYA6hKcsL',
     },
 });
-function uploadFile(req, res, fileBuffer) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const contentType = 'image/jpeg';
-        const filename = `image-${Date.now().toString()}`;
-        const params = {
-            Bucket: process.env.AWS_S3_BUCKET_NAME || 'garotasbrasil',
-            Key: filename,
-            Body: fileBuffer,
-            ContentType: contentType,
-        };
-        try {
-            yield s3.upload(params).promise();
-            return `https://${params.Bucket}.s3.amazonaws.com/${params.Key}`;
-        }
-        catch (error) {
-            console.log(error);
-            throw new Error('Error uploading file');
-        }
-    });
-}
 class UserController {
     store(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -57,13 +36,11 @@ class UserController {
             if (userExists) {
                 return res.status(400).json({ error: 'User already exists' });
             }
-            const hashedPassword = yield bcryptjs_1.default.hash(password, 8);
-            const videoBuffer = Buffer.from(confirmation_video, 'base64');
-            const videoUrl = yield uploadFile(req, res, videoBuffer);
+            //const hashedPassword = await bcrypt.hash(password, 8);
             const user = new User_1.default();
             user.name = name;
             user.email = email;
-            user.password = hashedPassword;
+            user.password = password;
             user.provider = provider;
             user.contact = contato;
             user.plan_level = plan_level;
@@ -71,7 +48,7 @@ class UserController {
             user.data_nascimento = data_nascimento;
             user.cidade = cidade;
             user.estado = estado;
-            user.confirmation_video = videoUrl;
+            user.confirmation_video = confirmation_video;
             const profile = new Profile_1.default();
             profile.name = 'Digite o Nome do seu Perfil';
             profile.description = 'Sobre mim';
@@ -145,6 +122,52 @@ class UserController {
             catch (error) {
                 console.error(error); // Imprime a mensagem de erro no console
                 // Encerra a conexão se ocorrer algum erro
+                return res.status(500).json({ error: 'Internal server error' });
+            }
+        });
+    }
+    upload(req, res) {
+        var _a;
+        return __awaiter(this, void 0, void 0, function* () {
+            const fileBuffer = Buffer.from((_a = req === null || req === void 0 ? void 0 : req.body) === null || _a === void 0 ? void 0 : _a.images, 'base64');
+            const contentType = 'image/jpeg';
+            const filename = `image-${Date.now().toString()}`;
+            const params = {
+                Bucket: process.env.AWS_S3_BUCKET_NAME || 'garotasbrasil',
+                Key: filename,
+                Body: fileBuffer,
+                ContentType: contentType,
+            };
+            try {
+                yield s3.upload(params).promise();
+                return res.json({
+                    url: `https://${params.Bucket}.s3.amazonaws.com/${params.Key}`,
+                });
+            }
+            catch (error) {
+                return res.status(500).json({ error: 'Internal server error' });
+            }
+        });
+    }
+    uploadVideos(req, res) {
+        var _a;
+        return __awaiter(this, void 0, void 0, function* () {
+            const fileBuffer = Buffer.from((_a = req === null || req === void 0 ? void 0 : req.body) === null || _a === void 0 ? void 0 : _a.videos, 'base64');
+            const contentType = 'video/mp4';
+            const filename = `video-${Date.now().toString()}`;
+            const params = {
+                Bucket: process.env.AWS_S3_BUCKET_NAME || 'garotasbrasil',
+                Key: filename,
+                Body: fileBuffer,
+                ContentType: contentType,
+            };
+            try {
+                yield s3.upload(params).promise();
+                return res.json({
+                    url: `https://${params.Bucket}.s3.amazonaws.com/${params.Key}`,
+                });
+            }
+            catch (error) {
                 return res.status(500).json({ error: 'Internal server error' });
             }
         });

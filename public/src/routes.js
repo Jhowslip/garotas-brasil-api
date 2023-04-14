@@ -11,6 +11,8 @@ const FeedBackController_1 = __importDefault(require("./controllers/FeedBackCont
 const PlanController_1 = __importDefault(require("./controllers/PlanController"));
 const routes = (0, express_1.Router)();
 routes.post('/users', UserController_1.default.store);
+routes.post('/upload', UserController_1.default.upload);
+routes.post('/uploadVideos', UserController_1.default.uploadVideos);
 routes.post('/sessions', SessionController_1.default.store);
 routes.post('/feedback', FeedBackController_1.default.store);
 routes.post('/plan', PlanController_1.default.store);
