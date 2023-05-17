@@ -29,9 +29,43 @@ class FeedBackController {
             }
         });
     }
+    getById(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const id = req.params.id; // pega o id da URL
+                const feedback = yield data_source_1.AppDataSource.createQueryBuilder(Feedback_1.default, 'feedback')
+                    .leftJoinAndSelect('feedback.profile', 'profile')
+                    .where('feedback.id = :id', { id }) // adiciona uma cláusula "where" para buscar pelo id
+                    .getOne(); // usa o método "getOne" para retornar apenas um registro
+                if (!feedback) { // verifica se não encontrou nenhum registro
+                    return res.status(404).json({ error: 'Feedback not found' });
+                }
+                return res.json(feedback);
+            }
+            catch (error) {
+                console.error(error);
+                return res.status(500).json({ error: 'Internal server error' });
+            }
+        });
+    }
+    getByProfileId(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const profileId = req.params.id;
+                const feedbacks = yield data_source_1.AppDataSource.createQueryBuilder(Feedback_1.default, 'feedback')
+                    .where('feedback.profile = :profileId', { profileId }) // adiciona uma cláusula "where" para buscar pelos feedbacks do profile
+                    .getMany(); // usa o método "getMany" para retornar vários registros
+                return res.json(feedbacks);
+            }
+            catch (error) {
+                console.error(error);
+                return res.status(500).json({ error: 'Internal server error' });
+            }
+        });
+    }
     store(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { nome, mensagem, profile_id } = req.body;
+            const { nome, mensagem, profile_id, rank } = req.body;
             const profile = yield data_source_1.AppDataSource.getRepository(Profile_1.default).findOne({
                 where: { id: profile_id },
             });
@@ -41,6 +75,7 @@ class FeedBackController {
             const feedback = yield data_source_1.AppDataSource.getRepository(Feedback_1.default).save({
                 nome: nome,
                 mensagem: mensagem,
+                rank: rank,
                 profile: profile,
             });
             return res.json(feedback);

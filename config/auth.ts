@@ -1,4 +1,4 @@
 export default {
-  secret: 'Arakaki',
-  expiresIn: '7d',
+  secret: "Arakaki",
+  expiresIn: "7d",
 };

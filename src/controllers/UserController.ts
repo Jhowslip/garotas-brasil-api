@@ -76,6 +76,7 @@ class UserController {
     const feedback = new Feedback();
     feedback.nome = '';
     feedback.mensagem = '';
+    feedback.rank = 0;
     feedback.profile = profile;
 
     const [userSaved, profileSaved, pagamentoSaved, feedbackSaved] =

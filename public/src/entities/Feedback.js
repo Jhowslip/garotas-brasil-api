@@ -29,6 +29,10 @@ __decorate([
     __metadata("design:type", String)
 ], Feedback.prototype, "mensagem", void 0);
 __decorate([
+    (0, typeorm_1.Column)(),
+    __metadata("design:type", Number)
+], Feedback.prototype, "rank", void 0);
+__decorate([
     (0, typeorm_1.ManyToOne)(() => Profile_1.default, { onDelete: 'CASCADE' }),
     __metadata("design:type", Profile_1.default)
 ], Feedback.prototype, "profile", void 0);

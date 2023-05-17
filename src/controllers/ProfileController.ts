@@ -1,8 +1,6 @@
 import { Request, Response } from "express";
 import { AppDataSource } from "../utils/data-source";
 import Profile from "../entities/Profile";
-import aws from "aws-sdk";
-import User from "../entities/User";
 
 class ProfileController {
   async getAll(req: Request, res: Response) {

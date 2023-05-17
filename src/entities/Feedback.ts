@@ -19,6 +19,9 @@ export default class Feedback {
   @Column()
   mensagem!: string;
 
+  @Column()
+  rank!: number;
+
   @ManyToOne(() => Profile, { onDelete: 'CASCADE' })
   profile!: Profile;
 
