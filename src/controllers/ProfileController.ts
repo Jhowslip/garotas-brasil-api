@@ -10,6 +10,7 @@ class ProfileController {
       const state = req.query.state; // obtém o valor do parâmetro de consulta
 
       const profiles = await AppDataSource.getRepository(Profile).find({
+        relations: ["feedbacks"],
         where: {
           user: {
             provider: true,
